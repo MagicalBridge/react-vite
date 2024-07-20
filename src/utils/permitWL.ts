@@ -1,29 +1,9 @@
 import { ethers } from 'ethers';
 
 // 假设这些是您的合约 ABI 和地址
+
 const NFT_MARKET_ABI = [
-  "constructor(address _tokenAddress, address _nftAddress)",
-  "function eip712Domain() view returns (bytes1 fields, string name, string version, uint256 chainId, address verifyingContract, bytes32 salt, uint256[] extensions)",
-  "function list(uint256 _tokenId, uint256 _price)",
-  "function listings(uint256) view returns (address seller, uint256 price)",
-  "function nftContract() view returns (address)",
-  "function owner() view returns (address)",
-  "function permitBuyNFT(tuple(uint256 tokenId, uint256 deadline) permitData, bytes _permitWL, bytes _permit)",
-  "function renounceOwnership()",
-  "function tokenContract() view returns (address)",
-  "function tokenContractPermit() view returns (address)",
-  "function transferOwnership(address newOwner)",
-  "event EIP712DomainChanged()",
-  "event NFTListed(uint256 indexed tokenId, address indexed seller, uint256 price)",
-  "event NFTSold(uint256 indexed tokenId, address indexed seller, address indexed buyer, uint256 price)",
-  "event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)",
-  "error ECDSAInvalidSignature()",
-  "error ECDSAInvalidSignatureLength(uint256 length)",
-  "error ECDSAInvalidSignatureS(bytes32 s)",
-  "error InvalidShortString()",
-  "error OwnableInvalidOwner(address owner)",
-  "error OwnableUnauthorizedAccount(address account)",
-  "error StringTooLong(string str)"
+  "function permitBuyNFT(bytes _permitWL, address buyer, uint256 deadline, tuple(uint256 tokenId, uint256 deadline) permitData, bytes _permit)"
 ];
 
 const ERC20_ABI = [ 
@@ -45,8 +25,7 @@ const ERC20_ABI = [
 ];
 
 const ERC20_ADDRESS = '0x3c510705cdbb9c2d8c6A68A44256fb331D1EDB56' // 您的 ERC20 Token 合约地址
-const NFT_MARKET_ADDRESS = '0x367C7bD4843A20B80F71a9b83Fcf8223d88bE902'; // 您的 NFT Market 合约地址
-
+const NFT_MARKET_ADDRESS = '0x843E582a8E439E770D18553942bAF1D3f10b0Ff1'; 
 
 async function buyNFTWithPermit(
   provider: ethers.Provider,
@@ -64,7 +43,7 @@ async function buyNFTWithPermit(
 
   console.log(deadline);
   
-  const nonce = await erc20.nonces(buyerAddress);
+  const nonce = await erc20.nonces('0x922dB1A931327CA2680343eD2d5E4541669701e9');
   const name = await erc20.name();
   const chainId = (await provider.getNetwork()).chainId;
 
@@ -96,57 +75,25 @@ async function buyNFTWithPermit(
 
   // 3. 签名 permit 消息
   const tokenSignature = await signer.signTypedData(domain, types, tokenValue);
+
+  console.log("tokenSignature", tokenSignature);
   
-  const {
-    v: tokenV,
-    r: tokenR,
-    s: tokenS
-  } = ethers.Signature.from(tokenSignature);
+  // const {
+  //   v: tokenV,
+  //   r: tokenR,
+  //   s: tokenS
+  // } = ethers.Signature.from(tokenSignature);
 
-  // 编码 ERC20 permit 数据
-  const tokenPermitData = ethers.AbiCoder.defaultAbiCoder().encode(
-    ['uint8', 'bytes32', 'bytes32'],
-    [tokenV, tokenR, tokenS]
-  );
-
-  // 4. 准备白名单 permit 数据 (这里假设白名单检查使用相同的签名方法)
-  const wlDomain = {
-    name: 'NFTMarketPermitWL',
-    version: '1',
-    chainId: chainId,
-    verifyingContract: NFT_MARKET_ADDRESS
-  };
-
-  console.log("wlDomain", wlDomain);
-  
-
-  const wlTypes = {
-    PermitBuyNFTWL: [
-      { name: 'owner', type: 'address' },
-      { name: 'buyer', type: 'address' }
-    ]
-  };
-
-  console.log("wlTypes", wlTypes);
-  
-
-  const wlMessage = {
-    owner: await nftMarket.owner(),
-    buyer: buyerAddress
-  };
-
-  console.log(wlMessage.owner);
-  console.log(wlMessage.buyer);
-
-  // 5. 签名白名单 permit 消息 (这里假设白名单签名由合约拥有者提供)
-  // 注意：在实际应用中，这个签名应该由后端服务提供
-  // const wlSignature = await signer.signTypedData(wlDomain, wlTypes, wlMessage);
-  // const wlSig = ethers.Signature.from(wlSignature);  
+  // console.log("tokenV", tokenV);
+  // console.log("tokenR", tokenR);
+  // console.log("tokenS", tokenS);
 
   // 6. 调用 permitBuyNFT 函数
   const tx = await nftMarket.permitBuyNFT(
+    "0xee99832b871892f1f1bab6904e388fd0718127179431bfcf388fe6d8ba333ea166c65ed1aa2e8e353da716a993a0232e0402211a56fea7694cf466607c2942861b",
+    '0x922dB1A931327CA2680343eD2d5E4541669701e9',
+    12832560866,
     { tokenId: tokenId, deadline: deadline },
-    "0x9b2272de502b2c9692e66721593deb4a15c7a79ed1fd5d9e3962bb7b407b7def790fcdfc345686ef93f402504c3e523a7694725ca581e943d43554c0aede6dde1b",
     tokenSignature
   );
 
@@ -172,8 +119,9 @@ export async function main() {
     signer = await provider.getSigner();
   }
   
-  const tokenId = 3; // 要购买的 NFT 的 tokenId
+  const tokenId = 4; // 要购买的 NFT 的 tokenId
   const price = ethers.parseEther('5'); // 假设价格是 5个 token
 
   await buyNFTWithPermit(provider, signer, tokenId, price);
 }
+

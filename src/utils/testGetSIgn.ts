@@ -17,7 +17,8 @@ export default async function testGetSIgn() {
 
   const chainId = (await provider.getNetwork()).chainId;
   
-  const contractAddress = '0xAd51e186Df7eA89fBef78E46bd6B669398Cb8C9D';
+  const contractAddress = '0x843E582a8E439E770D18553942bAF1D3f10b0Ff1';
+  
   // 1. 准备 permit 数据
   const deadline = Math.floor(Date.now() / 1000) + 11111111111; // 1 hour from now
 
@@ -41,7 +42,7 @@ export default async function testGetSIgn() {
     };
 
     const types = {
-      Permit: [
+      PermitBuyNFTWL: [
         { name: 'buyer', type: 'address' },
         { name: 'deadline', type: 'uint256'}
       ],
@@ -49,13 +50,14 @@ export default async function testGetSIgn() {
 
     const value = {
       buyer: '0x922dB1A931327CA2680343eD2d5E4541669701e9',
-      deadline
+      deadline: deadline
     };
 
     // 签名 permit 消息
     const wlSignature = await signer.signTypedData(domain, types, value);
 
     console.log(wlSignature);
+
   } catch (error) {
     console.error('Error:', error);
   }

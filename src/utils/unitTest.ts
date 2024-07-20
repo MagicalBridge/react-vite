@@ -15,12 +15,16 @@ export async function unitTest() {
     signer = await provider.getSigner()
   }
 
-  const contractAddress = "0xAd51e186Df7eA89fBef78E46bd6B669398Cb8C9D"
+   // 获取当前账户
+  const address = await signer.getAddress();
+
+  console.log("address", address);
+
+  const contractAddress = "0xdd728f51Be5A699d8830892f80412335C7B88b66"
 
   // 合约的 ABI
   const abi = [
-    "function verifyPermitSignature(bytes calldata signature, address buyer, uint256 deadline) public view returns (address)",
-    "function owner() view returns (address)",
+    "function verifyPermitSignature(bytes calldata signatureWL, address buyer, uint256 deadline) public view returns (address)",
   ]
 
   // const deadline = Math.floor(Date.now() / 1000) + 3600 // 1 hour from now
@@ -29,12 +33,10 @@ export async function unitTest() {
   const contract = new ethers.Contract(contractAddress, abi, signer)
 
   try {
-    // 调用合约方法
-    // 第一个参数传入
     const recoveredSigner = await contract.verifyPermitSignature(
-      "0x224a89cb44086256beb4149dede969a2ff506d3fea9c56d484bcd4faf36c40807f783150e547ec8617f4f6cd0d36181ca40c77cb4de2099bad696f369fb840ed1c",
-      "0x922dB1A931327CA2680343eD2d5E4541669701e9",
-      12832470521
+      '0x0263be14303bec479bb55baab55825e149ea4a28594ad451eab34e74d752a15c1876ecaf486449ccd88f283057d93e5e1aea11ed2e521b49cc8023addfcb3c8a1b',
+      '0x922dB1A931327CA2680343eD2d5E4541669701e9',
+      12832553311
     )
 
     console.log("Recovered Signer:", recoveredSigner)
