@@ -104,10 +104,10 @@ export async function main() {
   // 连接到以太坊提供者（例如 MetaMask）
   let provider, signer;
 
-  if (typeof (window as any).ethereum !== 'undefined') {
+  if (typeof window.ethereum !== 'undefined') {
     // 使用 MetaMask 或类似的浏览器钱包
-    await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
-    provider = new ethers.BrowserProvider((window as any).ethereum);
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+    provider = new ethers.BrowserProvider(window.ethereum);
     signer = await provider.getSigner();
   } else {
     // 如果没有浏览器钱包，使用 JsonRpcProvider
