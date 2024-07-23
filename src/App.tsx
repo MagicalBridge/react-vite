@@ -1,5 +1,6 @@
 import CountBtn from '@/components/CountBtn';
 import ReactSVG from '@/assets/react.svg';
+import testGetSIgnNFT from '@/utils/testGetSIgnNFT'
 // import { Badge } from '@/components/ui/badge';
 
 function App() {
@@ -15,6 +16,13 @@ function App() {
           <Badge variant="outline">shadcn/ui</Badge>
         </a> */}
         <CountBtn />
+
+        <div 
+          className='border border-gray-300 p-4 cursor-pointer'
+          onClick={() => testGetSIgnNFT()}
+        >
+          生成签名
+        </div>
       </div>
     </main>
   );
