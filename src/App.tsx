@@ -1,7 +1,5 @@
 import CountBtn from '@/components/CountBtn';
 import ReactSVG from '@/assets/react.svg';
-import testGetSIgnNFT from '@/utils/testGetSIgnNFT'
-// import { Badge } from '@/components/ui/badge';
 
 function App() {
   return (
@@ -12,17 +10,7 @@ function App() {
           <span className="text-6xl">+</span>
           <img src={'/vite.svg'} alt="Vite Logo" className="w-32" />
         </div>
-        {/* <a href="https://ui.shadcn.com" rel="noopener noreferrer nofollow" target="_blank">
-          <Badge variant="outline">shadcn/ui</Badge>
-        </a> */}
         <CountBtn />
-
-        <div 
-          className='border border-gray-300 p-4 cursor-pointer'
-          onClick={() => testGetSIgnNFT()}
-        >
-          生成签名
-        </div>
       </div>
     </main>
   );

@@ -1,28 +1,33 @@
 // import { useState } from 'react';
+import { useAccount, useConnect, useDisconnect } from 'wagmi'
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-// import { main } from '@/utils/permitWL';
-// import testPermitBuyNFT from '@/utils/permit'
-// import testGetSIgn from '@/utils/testGetSIgn'
-// import {unitTest} from '../utils/unitTest'
-import {unitTestNFT} from '../utils/unitTestNFT'
 
 interface Props {
   className?: string;
 }
 
 export default function CountBtn({ className }: Props) {
-  // const [count, setCount] = useState(0);
+  const account = useAccount()
+  const { disconnect } = useDisconnect()
+  const { connectors, connect, status, error } = useConnect()
+  const connector = connectors.find((connector) => connector.name === 'MetaMask')!;
   return (
-    <Button onClick={() => {
-      // main();
-      // testGetSIgn();
-      // unitTest()
-      unitTestNFT()
-    }} className={cn('', className)}>
+    <>
+      <div>{account.address}</div>
       {
-        "验证签名"
+        account.status === 'connected' ? (
+          <>
+            <Button onClick={() => disconnect({ connector })} className={cn('', className)}>
+              断开连接
+            </Button>
+          </>
+        ) : (
+          <Button onClick={() => connect({ connector })} className={cn('', className)}>
+            钱包连接
+          </Button>
+        )
       }
-    </Button>
+    </>
   );
 }
