@@ -2,6 +2,7 @@
 import { useAccount, useConnect, useDisconnect } from 'wagmi'
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import testSwap from "../utils/testSwap"
 
 interface Props {
   className?: string;
@@ -15,7 +16,7 @@ export default function CountBtn({ className }: Props) {
   return (
     <>
       <div>{account.address}</div>
-      {
+      {/* {
         account.status === 'connected' ? (
           <>
             <Button onClick={() => disconnect({ connector })} className={cn('', className)}>
@@ -27,7 +28,10 @@ export default function CountBtn({ className }: Props) {
             钱包连接
           </Button>
         )
-      }
+      } */}
+      <Button onClick={() => testSwap()} className={cn('', className)}>
+        测试交换
+      </Button>
     </>
   );
 }
