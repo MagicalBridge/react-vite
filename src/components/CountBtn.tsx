@@ -2,7 +2,8 @@
 import { useAccount, useConnect, useDisconnect } from 'wagmi'
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import testSwap from "../utils/testSwap"
+// import testSwap from "../utils/testSwap"
+import { unitTest } from "../utils/unitTest"
 
 interface Props {
   className?: string;
@@ -29,7 +30,7 @@ export default function CountBtn({ className }: Props) {
           </Button>
         )
       } */}
-      <Button onClick={() => testSwap()} className={cn('', className)}>
+      <Button onClick={() => unitTest()} className={cn('', className)}>
         测试交换
       </Button>
     </>
